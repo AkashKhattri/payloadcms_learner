@@ -1,12 +1,41 @@
 import { CollectionConfig } from "payload/types";
+import { generateSlug } from "../utils/generateSlug";
+import payload from "payload";
+import { Category } from "payload/generated-types";
+import { afterProductChanges } from "../api/afterChanges";
 
 export const Products: CollectionConfig = {
   slug: "products",
+  admin: {
+    useAsTitle: "name",
+  },
+  hooks: {
+    afterChange: [afterProductChanges],
+  },
   fields: [
+    {
+      name: "heroImage",
+      type: "upload",
+      relationTo: "media",
+      required: true,
+    },
     {
       name: "name",
       type: "text",
       required: true,
+      hooks: {
+        beforeChange: [
+          ({ data }) => {
+            data.slug = generateSlug(data.name);
+          },
+        ],
+      },
+    },
+    {
+      name: "category",
+      type: "relationship",
+      relationTo: "categories",
+      hasMany: false,
     },
     {
       name: "source",
@@ -15,11 +44,19 @@ export const Products: CollectionConfig = {
     {
       name: "removedStatus",
       type: "checkbox",
+      hidden: true,
     },
     {
       name: "orderLimit",
       type: "number",
       required: true,
+      validate: (val) => {
+        if (val <= 0) {
+          return "Order limit must be greater than 0";
+        } else {
+          return true;
+        }
+      },
     },
     {
       name: "newArrival",
@@ -40,15 +77,33 @@ export const Products: CollectionConfig = {
     {
       name: "price",
       type: "number",
+      defaultValue: 0,
     },
     {
       name: "sellingPrice",
       type: "number",
+      defaultValue: 0,
+      hooks: {
+        beforeChange: [
+          ({ data }) => {
+            if (data.discount > 0) {
+              data.sellingPrice =
+                data.price - data.price * (data.discount / 100);
+            } else {
+              data.sellingPrice = 0;
+            }
+          },
+        ],
+      },
     },
     {
       name: "stock",
       type: "number",
       required: true,
+    },
+    {
+      name: "discount",
+      type: "number",
     },
     {
       name: "description",
@@ -65,12 +120,7 @@ export const Products: CollectionConfig = {
         },
       ],
     },
-    {
-      name: "heroImage",
-      type: "upload",
-      relationTo: "media",
-      required: true,
-    },
+
     {
       name: "gallery",
       type: "array",
