@@ -1,11 +1,12 @@
 import { CollectionConfig } from "payload/types";
 import { generateSlug } from "../utils/generateSlug";
-import payload from "payload";
-import { Category } from "payload/generated-types";
-import { afterProductChanges } from "../api/afterChanges";
+import { afterProductChanges } from "../api/hooks/afterChanges";
 
 export const Products: CollectionConfig = {
   slug: "products",
+  access: {
+    read: () => true,
+  },
   admin: {
     useAsTitle: "name",
   },

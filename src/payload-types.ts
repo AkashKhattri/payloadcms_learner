@@ -23,6 +23,7 @@ export interface Config {
  */
 export interface User {
   id: number;
+  role?: ('admin' | 'user') | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -105,7 +106,7 @@ export interface Category {
   id: number;
   name: string;
   slug?: string | null;
-  image: number | Media;
+  image?: number | Media | null;
   products?: (number | Product)[] | null;
   updatedAt: string;
   createdAt: string;
