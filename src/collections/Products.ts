@@ -1,23 +1,6 @@
-<<<<<<< HEAD
-import { CollectionConfig, Field } from "payload/types";
-
-const productNameField: Field = {
-  name: "name",
-  type: "text",
-  required: true,
-  hooks: {
-    afterChange: [
-      ({ value, previousValue, req }) => {
-        `User ID ${req.user.id} changed their membership status from ${previousValue} to ${value}.`;
-      },
-    ],
-  },
-};
-=======
 import { CollectionConfig } from "payload/types";
 import { generateSlug } from "../utils/generateSlug";
 import { afterProductChanges } from "../api/hooks/afterChanges";
->>>>>>> 58eacbf626f0ebe6b564feb5a36bea4ab078cdf4
 
 export const Products: CollectionConfig = {
   slug: "products",
@@ -31,9 +14,6 @@ export const Products: CollectionConfig = {
     afterChange: [afterProductChanges],
   },
   fields: [
-<<<<<<< HEAD
-    productNameField,
-=======
     {
       name: "heroImage",
       type: "upload",
@@ -58,7 +38,6 @@ export const Products: CollectionConfig = {
       relationTo: "categories",
       hasMany: false,
     },
->>>>>>> 58eacbf626f0ebe6b564feb5a36bea4ab078cdf4
     {
       name: "source",
       type: "text",
