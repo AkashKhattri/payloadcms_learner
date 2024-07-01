@@ -16,9 +16,11 @@
     "payload": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload"
   },
   "dependencies": {
+    "@divbrands/payload-plugin-ckeditor": "^0.0.2",
     "@payloadcms/bundler-webpack": "^1.0.0",
     "@payloadcms/db-postgres": "^0.x",
     "@payloadcms/plugin-cloud": "^3.0.0",
+    "@payloadcms/richtext-lexical": "^0.11.2",
     "@payloadcms/richtext-slate": "^1.0.0",
     "cross-env": "^7.0.3",
     "dotenv": "^8.2.0",

@@ -9,6 +9,8 @@ import { buildConfig } from "payload/config";
 import Users from "./collections/Users";
 import { Products } from "./collections/Products";
 import { Categories } from "./collections/Categories";
+import { Orders } from "./collections/Orders";
+import { AddressBook } from "./collections/AddressBook";
 
 export default buildConfig({
   admin: {
@@ -20,6 +22,8 @@ export default buildConfig({
     Users,
     Products,
     Categories,
+    Orders,
+    AddressBook,
     {
       slug: "media",
       fields: [

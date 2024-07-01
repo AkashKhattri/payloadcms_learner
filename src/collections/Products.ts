@@ -1,11 +1,16 @@
 import { CollectionConfig } from "payload/types";
 import { generateSlug } from "../utils/generateSlug";
 import { afterProductChanges } from "../api/hooks/afterChanges";
+import { isAdminCollection, isAdminField } from "../api/access/permissions";
+import { ckeditorField } from "@divbrands/payload-plugin-ckeditor";
 
 export const Products: CollectionConfig = {
   slug: "products",
   access: {
     read: () => true,
+    create: isAdminCollection,
+    update: isAdminCollection,
+    delete: isAdminCollection,
   },
   admin: {
     useAsTitle: "name",
@@ -106,11 +111,13 @@ export const Products: CollectionConfig = {
       name: "discount",
       type: "number",
     },
-    {
-      name: "description",
-      type: "richText",
+
+    ckeditorField({
+      name: "fullDescription",
+      label: "Full Description",
+      localized: true,
       required: true,
-    },
+    }),
     {
       name: "tags",
       type: "array",

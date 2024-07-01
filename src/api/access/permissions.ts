@@ -12,7 +12,14 @@ export const isAdminOrCreatedBy: Access = ({ req: { user } }) => {
   return false;
 };
 
-export const isAdmin: FieldAccess = ({ req: { user } }) => {
+export const isAdminField: FieldAccess = ({ req: { user } }) => {
+  if (user && user.role === "admin") {
+    return true;
+  }
+
+  return false;
+};
+export const isAdminCollection: Access = ({ req: { user } }) => {
   if (user && user.role === "admin") {
     return true;
   }

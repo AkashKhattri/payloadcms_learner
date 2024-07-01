@@ -26,23 +26,24 @@ export const afterProductChanges: CollectionAfterChangeHook = async ({
             },
           });
         }
-
-        const previousDocCategory: Category = await payload.findByID({
-          collection: "categories",
-          id: previousDoc.category,
-          depth: 0,
-        });
-
-        if (previousDocCategory?.products.includes(doc.id)) {
-          payload.update({
+        if ("category" in previousDoc) {
+          const previousDocCategory: Category = await payload.findByID({
             collection: "categories",
-            id: Number(previousDoc.category),
-            data: {
-              products: previousDocCategory.products.filter(
-                (pCat) => pCat !== doc.id
-              ),
-            },
+            id: previousDoc.category,
+            depth: 0,
           });
+
+          if (previousDocCategory?.products.includes(doc.id)) {
+            payload.update({
+              collection: "categories",
+              id: Number(previousDoc.category),
+              data: {
+                products: previousDocCategory.products.filter(
+                  (pCat) => pCat !== doc.id
+                ),
+              },
+            });
+          }
         }
       }
     }

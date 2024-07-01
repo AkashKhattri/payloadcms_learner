@@ -1,31 +1,21 @@
 import { CollectionConfig } from "payload/types";
-import { isAdmin, isAdminOrCreatedBy } from "../api/access/permissions";
+import { isAdminField, isAdminOrCreatedBy } from "../api/access/permissions";
+import { createdBy } from "../utils/fields";
 
 export const Orders: CollectionConfig = {
   slug: "orders",
+  auth: true,
   fields: [
     {
       name: "paymentId",
       type: "text",
       access: {
-        create: isAdmin,
-        read: isAdmin,
-        update: isAdmin,
+        create: isAdminField,
+        read: isAdminField,
+        update: isAdminField,
       },
     },
-    {
-      name: "createdBy",
-      type: "relationship",
-      relationTo: "users",
-      access: {
-        update: () => false,
-      },
-      admin: {
-        readOnly: true,
-        position: "sidebar",
-        condition: (data) => Boolean(data?.createdBy),
-      },
-    },
+    createdBy,
     {
       name: "orderItems",
       type: "array",
@@ -75,15 +65,14 @@ export const Orders: CollectionConfig = {
       },
     },
     {
-      name: "subTotal",
-      type: "number",
-      admin: {
-        readOnly: true,
-      },
-    },
-    {
       name: "deliveredAt",
       type: "date",
+    },
+
+    {
+      name: "shippingPrice",
+      type: "number",
+      defaultValue: 0,
     },
     {
       name: "deliveryStatus",
@@ -97,11 +86,6 @@ export const Orders: CollectionConfig = {
         "DISPATCHED",
         "ON_THE_WAY",
       ],
-    },
-    {
-      name: "shippingPrice",
-      type: "number",
-      defaultValue: 0,
     },
     {
       name: "paymentStatus",

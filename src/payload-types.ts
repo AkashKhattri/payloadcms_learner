@@ -11,6 +11,8 @@ export interface Config {
     users: User;
     products: Product;
     categories: Category;
+    orders: Order;
+    addressBook: AddressBook;
     media: Media;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -23,7 +25,9 @@ export interface Config {
  */
 export interface User {
   id: number;
+  fullname: string;
   role?: ('admin' | 'user') | null;
+  createdBy?: (number | null) | User;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -55,9 +59,7 @@ export interface Product {
   sellingPrice?: number | null;
   stock: number;
   discount?: number | null;
-  description: {
-    [k: string]: unknown;
-  }[];
+  fullDescription: string;
   tags?:
     | {
         tag?: string | null;
@@ -113,14 +115,77 @@ export interface Category {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders".
+ */
+export interface Order {
+  id: number;
+  paymentId?: string | null;
+  createdBy?: (number | null) | User;
+  orderItems?:
+    | {
+        orderItems?: (number | null) | Product;
+        price: number;
+        disount: number;
+        discountAmount: number;
+        id?: string | null;
+      }[]
+    | null;
+  paymentType?: string | null;
+  subTotal?: number | null;
+  deliveredAt?: string | null;
+  shippingPrice?: number | null;
+  deliveryStatus?:
+    | ('DELIVERED' | 'PENDING' | 'PROCESSING' | 'CANCELLED' | 'ORDER_PLACED' | 'DISPATCHED' | 'ON_THE_WAY')
+    | null;
+  paymentStatus?: ('PENDING' | 'PAID') | null;
+  grandTotal?: number | null;
+  billingAddress?: (number | null) | AddressBook;
+  shippingAddress?: (number | null) | AddressBook;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  password: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "addressBook".
+ */
+export interface AddressBook {
+  id: number;
+  user?: (number | null) | User;
+  defaultDeliveryAddress?: boolean | null;
+  defaultBillingAddress?: boolean | null;
+  name?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  address?: string | null;
+  apartmentNumber?: string | null;
+  city?: string | null;
+  postalCode?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
   id: number;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
+  user:
+    | {
+        relationTo: 'users';
+        value: number | User;
+      }
+    | {
+        relationTo: 'orders';
+        value: number | Order;
+      };
   key?: string | null;
   value?:
     | {
