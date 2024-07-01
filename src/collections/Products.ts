@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { CollectionConfig, Field } from "payload/types";
 
 const productNameField: Field = {
@@ -12,11 +13,52 @@ const productNameField: Field = {
     ],
   },
 };
+=======
+import { CollectionConfig } from "payload/types";
+import { generateSlug } from "../utils/generateSlug";
+import { afterProductChanges } from "../api/hooks/afterChanges";
+>>>>>>> 58eacbf626f0ebe6b564feb5a36bea4ab078cdf4
 
 export const Products: CollectionConfig = {
   slug: "products",
+  access: {
+    read: () => true,
+  },
+  admin: {
+    useAsTitle: "name",
+  },
+  hooks: {
+    afterChange: [afterProductChanges],
+  },
   fields: [
+<<<<<<< HEAD
     productNameField,
+=======
+    {
+      name: "heroImage",
+      type: "upload",
+      relationTo: "media",
+      required: true,
+    },
+    {
+      name: "name",
+      type: "text",
+      required: true,
+      hooks: {
+        beforeChange: [
+          ({ data }) => {
+            data.slug = generateSlug(data.name);
+          },
+        ],
+      },
+    },
+    {
+      name: "category",
+      type: "relationship",
+      relationTo: "categories",
+      hasMany: false,
+    },
+>>>>>>> 58eacbf626f0ebe6b564feb5a36bea4ab078cdf4
     {
       name: "source",
       type: "text",
@@ -24,11 +66,19 @@ export const Products: CollectionConfig = {
     {
       name: "removedStatus",
       type: "checkbox",
+      hidden: true,
     },
     {
       name: "orderLimit",
       type: "number",
       required: true,
+      validate: (val) => {
+        if (val <= 0) {
+          return "Order limit must be greater than 0";
+        } else {
+          return true;
+        }
+      },
     },
     {
       name: "newArrival",
@@ -49,15 +99,33 @@ export const Products: CollectionConfig = {
     {
       name: "price",
       type: "number",
+      defaultValue: 0,
     },
     {
       name: "sellingPrice",
       type: "number",
+      defaultValue: 0,
+      hooks: {
+        beforeChange: [
+          ({ data }) => {
+            if (data.discount > 0) {
+              data.sellingPrice =
+                data.price - data.price * (data.discount / 100);
+            } else {
+              data.sellingPrice = 0;
+            }
+          },
+        ],
+      },
     },
     {
       name: "stock",
       type: "number",
       required: true,
+    },
+    {
+      name: "discount",
+      type: "number",
     },
     {
       name: "description",
@@ -74,12 +142,7 @@ export const Products: CollectionConfig = {
         },
       ],
     },
-    {
-      name: "heroImage",
-      type: "upload",
-      relationTo: "media",
-      required: true,
-    },
+
     {
       name: "gallery",
       type: "array",
