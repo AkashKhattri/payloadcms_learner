@@ -1,13 +1,22 @@
-import { CollectionConfig } from "payload/types";
+import { CollectionConfig, Field } from "payload/types";
+
+const productNameField: Field = {
+  name: "name",
+  type: "text",
+  required: true,
+  hooks: {
+    afterChange: [
+      ({ value, previousValue, req }) => {
+        `User ID ${req.user.id} changed their membership status from ${previousValue} to ${value}.`;
+      },
+    ],
+  },
+};
 
 export const Products: CollectionConfig = {
   slug: "products",
   fields: [
-    {
-      name: "name",
-      type: "text",
-      required: true,
-    },
+    productNameField,
     {
       name: "source",
       type: "text",
